@@ -1,0 +1,54 @@
+1. Implementar o CRUD no projeto
+O que fazer: Desenvolver os metodos Create, Read, Update e Delete para cada uma das entidades, como pro-
+fessor e aluno.
+Sugestão: Dividir para conquistar. Um faz o C, outro o R e assim por diante. O que sobrar (Grupo de 5)
+ajuda os outros e desenrola no relatório
+
+2. Disussões Inicias sobre o relatório
+O que fazer: Precisamos construir o relatório. Precisamos conversar e decidir sobre:
+- Titulo do relatório: Deve refletir o tema geral da atividade prática.
+- Objetivo da atividade: Resumo do que foi proposto, destacando o foco principal da prática.
+
+- Introdução: 
+    - Objetivo geral: Contextualizar a prática realizada. Perguntas como:
+        - o Qual é o conceito principal abordado?
+        - o Por que este tema é importante?
+        - o Como ele se aplica a problemas ou cenários do mundo real?
+
+- Descrição e Análise do Caso
+    - Explique o problema ou cenário proposto na atividade.
+    - Perguntas:
+        - O que foi implementado ou estudado.
+        - Quais ferramentas ou técnicas foram utilizadas.
+        - Como o problema foi resolvido.
+
+- Implementação ou Procedimento
+    - as etapas realizadas durante a execução,
+        - Quais métodos ou técnicas foram aplicados?
+        - Como cada etapa contribuiu para o resultado?
+
+- Resultados
+    - Observações Realizadas: Resuma os procedimentos de validação ou análise realizados e os resultados obtidos.
+        - Inclua números, gráficos ou tabelas, se aplicável.
+        - Destaque o comportamento esperado e como ele se comparou com os resultados observados.
+    - Interpretação:  significado dos resultados obtidos em relação ao objetivo proposto.
+        - Os resultados atenderam às expectativas?
+        - O que eles revelam sobre o problema ou caso analisado?
+
+- Conclusão
+    - Resumo do Aprendizado:
+    - Aplicações Futuros:
+
+- Impacto e Conexão com o Mundo Real
+     - Relacione o tema da atividade a cenários práticos ou problemas reais.
+
+- Desafios Futuros e Melhorias
+    - Proponha soluções para desafios encontrados.
+    - Sugira abordagens mais avançadas ou complexas relacionadas ao tema.
+    - Inclua ideias de como o aprendizado pode ser expandido para novas aplicações.
+
+Instruções Gerais
+- Laudas: De 2 a 3 páginas.
+- Formato: PDF.
+- Linguagem: Clara, objetiva e técnica, evitando jargões excessivos.
+- Análise Crítica: Foque em destacar aprendizados, desafios e reflexões.
