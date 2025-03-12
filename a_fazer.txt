@@ -4,23 +4,41 @@ fessor e aluno.
 Sugestão: Dividir para conquistar. Um faz o C, outro o R e assim por diante. O que sobrar (Grupo de 5)
 ajuda os outros e desenrola no relatório
 
+C -> Pablo
+R-> Murilo
+U -> Uatila/Ana
+D -> Luiz
+
 2. Disussões Inicias sobre o relatório
 O que fazer: Precisamos construir o relatório. Precisamos conversar e decidir sobre:
 - Titulo do relatório: Deve refletir o tema geral da atividade prática.
+Titulo: Modelando uma API escolar
+
 - Objetivo da atividade: Resumo do que foi proposto, destacando o foco principal da prática.
+    - Construir uma api do zero que ajuda uma escola a implementar um novo sistema. Lidaremos com entidades como Aluno, Professor e Turma
 
 - Introdução: 
     - Objetivo geral: Contextualizar a prática realizada. Perguntas como:
         - o Qual é o conceito principal abordado?
+            - Implementar as entidades necessárias
+
         - o Por que este tema é importante?
+            - Facilta a organização da secretaria escolar
+
         - o Como ele se aplica a problemas ou cenários do mundo real?
+            - Estamos numa faculdade, lidando com esses sistemas. Com esse minimundo, podemos entender e fazer um sistema
 
 - Descrição e Análise do Caso
     - Explique o problema ou cenário proposto na atividade.
     - Perguntas:
-        - O que foi implementado ou estudado.
+        - O que foi implementado ou estudado.   
+            - Metodos CRUD, fLASK, Ambiente virtual
+            
         - Quais ferramentas ou técnicas foram utilizadas.
-        - Como o problema foi resolvido.
+            - Vs code, git e github, Flask
+
+        - Como o problema foi resolvido
+            - Nosso problema era criar metodos do crud, resolvemos dividindo
 
 - Implementação ou Procedimento
     - as etapas realizadas durante a execução,
