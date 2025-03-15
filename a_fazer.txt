@@ -8,6 +8,13 @@ C -> Pablo
 R-> Murilo
 U -> Uatila/Ana
 D -> Luiz
+-----------------------------------------------
+Parte 2 - execução dos testes
+C -> Pablo
+R-> Murilo
+U -> Uatila
+D -> Luiz
+
 
 2. Disussões Inicias sobre o relatório
 O que fazer: Precisamos construir o relatório. Precisamos conversar e decidir sobre:
