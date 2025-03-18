@@ -11,7 +11,7 @@ D -> Luiz
 -----------------------------------------------
 Parte 2 - adequação do código e execução dos testes
 
-Luiz      --> 01, 02, 03, 04
+Luiz      --> 00, 01, 02, 03
 Ana       --> 04, 05, 6A, 6B
 Murillo   --> 6C, 7, 8, 8B, 100
 Uatila    --> 100B, 101, 102, 103, 104
