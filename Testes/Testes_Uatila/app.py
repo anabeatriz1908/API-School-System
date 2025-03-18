@@ -118,7 +118,7 @@ def create_professor():
     usuarios["Professores"].append(novo_professor)
 
     print("Novo professor cadastrado:", novo_professor)
-    print("Lista atualizada de :", usuarios["Professor"])
+    print("Lista atualizada de :", usuarios["Professores"])
 
     # Retorna o novo professor criado
     return jsonify(novo_professor), 200
