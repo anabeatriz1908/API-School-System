@@ -1,6 +1,6 @@
 import requests
 import unittest
-import app
+import test_professores
 
 class TestStringMethods(unittest.TestCase):
     def test_001_read_professores(self):

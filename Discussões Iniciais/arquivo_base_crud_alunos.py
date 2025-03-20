@@ -1,12 +1,10 @@
 '''
 Arquivo base, feito na aula de Flask
 '''
-
-
 #%%
 #Importações
 from flask import Flask, jsonify
-import user
+
 import request 
 import unittest
 
