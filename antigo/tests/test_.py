@@ -1,6 +1,6 @@
 import requests
 import unittest
-import app
+import antigo.app as app
 
 
 class TestStringMethods(unittest.TestCase):
