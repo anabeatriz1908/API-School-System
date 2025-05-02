@@ -1,112 +1,127 @@
 from flask import Flask, jsonify, request
-from random import random
-
-usuarios = {
-    "Alunos": [
-        {"id":45,"nome":"Marcos", "idade": 20, "turma_id":300 , "data_nascimento": "15/01/2005", "nota_primeiro_semestre": 9.6, "nota_segundo_semestre": 8.6, "media_final": 9.1},
-        {"id":3, "nome": "Ana", "idade": 31, "turma_id":300, "data_nascimento": "03/03/1994", "nota_primeiro_semestre": 5.9, "nota_segundo_semestre": 10.0, "media_final": 7.95}
-    ],
-    "Professores": [
-        {"id": 200, "nome": "Vitor Furlan", "idade": 31, "materia": "Fundamentos de Banco de Dados", "observacoes": "Chega no horário e é super competente"},
-        {"id": 201, "nome": "Katrina Catarina", "idade": 63, "materia": "Introdução a Estatística", "observacoes": "Tem uma didática excelente e os alunos a amam"}
-    ],
-    "Turmas": [
-        {"id": 300, "descricao": "Fundamentos de Banco de Dados", "professor_id": 200, "ativo": True},
-        {"id": 310, "descricao": "Introdução a Estatística", "professor_id": 201, "ativo": True} 
-    ]
-}
+from datetime import datetime, date
+from config import db
+from main.Turma.turmas_model import Turmas
 
 
-id_usuarios = {
-    "id_alunos" : [45, 3],
-    "id_professores" : [200, 201],
-    "id_turmas" : [300, 301]
-}
+class Alunos(db.Model):
+    __tablename__ = "alunos"
+
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(100), nullable=False)
+    idade = db.Column(db.Integer, nullable=False)
+    data_nascimento = db.Column(db.Date, nullable=False)
+    nota_primeiro_semestre = db.Column(db.Float, nullable=False)
+    nota_segundo_semestre = db.Column(db.Float, nullable=False)
+    media_final = db.Column(db.Float, nullable=False)
+
+    turma_id = db.Column(db.Integer, db.ForeignKey("turmas.id"), nullable=False)
+    turmas = db.relationship("Turmas", back_populates="alunos")
+
+    def __init__(self, nome, data_nascimento, nota_primeiro_semestre, nota_segundo_semestre, turma_id):
+        self.nome = nome
+        self.data_nascimento = data_nascimento
+        self.nota_primeiro_semestre = nota_primeiro_semestre
+        self.nota_segundo_semestre = nota_segundo_semestre
+        self.turma_id = turma_id
+        self.media_final = self.calcular_media()
+        self.idade = self.calcular_idade()
+
+    #fazer teste unitário, para ver se a média e idade são calculadas certas, com testes errados e certos
+
+    def calcular_media(self):
+        media_final = (self.nota_primeiro_semestre+self.nota_segundo_semestre)/2
+        return f"{media_final:.2f}"
+    
+    def calcular_idade(self):
+        today = date.today()
+        return today.year - self.data_nascimento.year - ((today.month, today.day) < (self.data_nascimento.month, self.data_nascimento.day))
+
+    def to_dict(self):  
+        return {
+            "id": self.id,
+            "nome": self.nome, 
+            "idade": self.idade, 
+            "data_nascimento": self.data_nascimento.isoformat(), 
+            "nota_primeiro_semestre": self.nota_primeiro_semestre, 
+            "nota_segundo_semestre": self.nota_segundo_semestre, 
+            "turma_id": self.turma_id, 
+            "media_final": self.media_final
+            }
+    # pra retornar um novo aluno, como dicionário, formatado
+
+
+
+class AlunoNaoEncontrado(Exception):
+    pass 
+
 
 
 def create_alunos(aluno):
-    if "nome" not in aluno:
-        return None, "Aluno sem nome"
+    # verificando se turma existe
+    turma = Turmas.query.get(aluno["turma_id"])  #rever essa parte, pode dar erro no BD
+    if(turma is None):
+        return "Turma não existe", None
 
-    if "turma_id" not in aluno:
-        return None, "Aluno sem turma"
+    novo_aluno = Alunos(
+        nome = aluno["nome"],
+        data_nascimento = datetime.strptime(aluno["data_nascimento"],),
+        nota_primeiro_semestre= float(aluno["nota_primeiro_semestre="]),
+        nota_segundo_semestre= float(aluno["nota_segundo_semestre="]),
+        turma_id= int(aluno["turma_id"])
+    )
 
-    turma_ids = [turma["id"] for turma in usuarios["Turmas"]]
-    if aluno["turma_id"] not in turma_ids:
-        return None, "Turma não encontrada"
+    db.session.add(novo_aluno)
+    db.session.commit()
+    return "Aluno adicionado com sucesso", None # verificar se essa mensagem vai passar
 
-    if "id" in aluno:
-        cria_id = aluno["id"]
-        if cria_id in id_usuarios["id_alunos"]:
-            return None, "Id já utilizado"
-    else:
-        while True:
-            cria_id = int(random() * 100) + 100
-            if cria_id not in id_usuarios["id_alunos"]:
-                break
-
-    id_usuarios["id_alunos"].append(cria_id)
-
-    try:
-        nota1 = float(aluno["nota_primeiro_semestre"])
-        nota2 = float(aluno["nota_segundo_semestre"])
-    except ValueError:
-        return None, "Notas devem ser números"
-
-    media_final = (nota1 + nota2) / 2
-
-    novo_aluno = {
-        "id": cria_id,
-        "nome": aluno["nome"],
-        "idade": aluno["idade"],
-        "turma_id": aluno["turma_id"],
-        "data_nascimento": aluno["data_nascimento"],
-        "nota_primeiro_semestre": nota1,
-        "nota_segundo_semestre": nota2,
-        "media_final": media_final
-    }
-
-    usuarios["Alunos"].append(novo_aluno)
-    return novo_aluno, None
+    
+    # professor colocou igual em baixo
+    # return {"message": "Aluno adicionado com sucesso"},201  
 
 def read_alunos():
-    return usuarios["Alunos"], None
+    alunos = Alunos.query.all()
+    print(alunos)
+    return [aluno.to_dict() for aluno in alunos]
+
 
 def read_alunos_id(id_aluno):
-    return next((p for p in usuarios["Alunos"] if p["id"] == id_aluno), None)
+    aluno = Alunos.query.get(id_aluno)
+
+    if not aluno:
+        raise  AlunoNaoEncontrado(f'Aluno não encontrado.')
+    return Alunos.to_dict()
+
 
 def update_alunos(id_aluno, dados_atualizados):
-    aluno = next((a for a in usuarios["Alunos"] if a["id"] == id_aluno), None)
+    aluno = Alunos.query.get(id_aluno)
     if not aluno:
-        return None, "aluno não encontrado"
+        raise AlunoNaoEncontrado
 
-    if "nome" not in dados_atualizados:
-        return None, "aluno sem nome"
+    aluno.nome = dados_atualizados["nome"]
+    aluno.data_nascimento = dados_atualizados["data_nascimento"]
+    aluno.nota_primeiro_semestre = dados_atualizados["nota_primeiro_semestre"]
+    aluno.nota_segundo_semestre = dados_atualizados["nota_segundo_semestre"]
+    aluno.media_final = aluno.calcular_media()
+    aluno.turma_id = aluno["turma_id"]
+    aluno.idade = aluno.calcular_idade()
 
-    campos_editaveis = ["nome", "idade", "data_nascimento", "turma_id", "nota_primeiro_semestre", "nota_segundo_semestre"]
-    for campo in dados_atualizados:
-        if campo in campos_editaveis:
-            aluno[campo] = dados_atualizados[campo]
+    db.session.commit()
 
-    try:
-        nota1 = float(aluno["nota_primeiro_semestre"])
-        nota2 = float(aluno["nota_segundo_semestre"])
-        aluno["media_final"] = (nota1 + nota2) / 2
-    except (ValueError, KeyError):
-        return None, "notas inválidas para calcular a média"
-
-    return aluno, None
 
 def delete_aluno(id_aluno):
-    aluno = next((p for p in usuarios["Alunos"] if p["id"] == id_aluno), None)
+    aluno = Alunos.query.get(id_aluno)
     if not aluno:
-        return False
-    usuarios["Alunos"].remove(aluno)
-    if id_aluno in id_usuarios["id_alunos"]:
-        id_usuarios["id_alunos"].remove(id_aluno)
+        raise AlunoNaoEncontrado(f'Aluno não encontrado.')
+    db.session.delete(aluno)
+    db.session.commit()
     return True
 
+
+# Verificar se essa função funciona corretamente
 def delete_alunos():
-    usuarios["Alunos"].clear()
-    id_usuarios["id_alunos"].clear()
+    alunos = Alunos.query.all()
+    for aluno in alunos:
+        db.session.delete(aluno)
+    db.session.commit
     return True, None
