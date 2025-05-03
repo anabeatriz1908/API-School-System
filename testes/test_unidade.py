@@ -1,10 +1,9 @@
 import unittest
-from datetime import date, datetime
-from main.Aluno.alunos_model import Alunos
+from datetime import date
+from main.Aluno.alunos_model import *
 
 class TestAlunoCalculos(unittest.TestCase):
     def setUp(self):
-        """Configura um aluno básico para os testes"""
 
         class MockAluno:
             def __init__(self):
@@ -34,7 +33,6 @@ class TestAlunoCalculos(unittest.TestCase):
         idade = self.aluno.calcular_idade(hoje_mock)
         self.assertEqual(idade, 22)
     
-    # Testes para calcular_media()
     def test_calcular_media_valores_normais(self):
         """Testa cálculo de média com valores normais"""
         self.aluno.nota_primeiro_semestre = 6.0

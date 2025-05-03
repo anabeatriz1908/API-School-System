@@ -1,4 +1,3 @@
-from flask import Flask, jsonify, request
 from datetime import datetime, date
 from config import db
 from main.Turma.turmas_model import Turmas
@@ -27,7 +26,6 @@ class Alunos(db.Model):
         self.media_final = self.calcular_media()
         self.idade = self.calcular_idade()
 
-    #fazer teste unitário, para ver se a média e idade são calculadas certas, com testes errados e certos
 
     def calcular_media(self):
         media_final = (self.nota_primeiro_semestre+self.nota_segundo_semestre)/2
@@ -48,8 +46,6 @@ class Alunos(db.Model):
             "turma_id": self.turma_id, 
             "media_final": self.media_final
             }
-    # pra retornar um novo aluno, como dicionário, formatado
-
 
 
 class AlunoNaoEncontrado(Exception):

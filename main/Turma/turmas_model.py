@@ -1,4 +1,3 @@
-from flask import Flask, request
 from config import db
 from main.Professor.professores_model import Professores
 
@@ -37,7 +36,6 @@ def create_turmas(dados_turmas):
     professor = Professores.query.get(dados_turmas['professor_id'])
     if(professor is None):
         raise ProfessorNaoEncontrado
-        ## ou return "O professor não existe", None #ver se vai retornar certo
 
 
     nova_turma = Turmas(
@@ -54,7 +52,7 @@ def create_turmas(dados_turmas):
 
 def read_turmas():
     turmas = Turmas.query.all()
-    print(turmas) # esse print aparece no termina, para verificar se esta puxando todos os objetos do bd corretamente
+    print(turmas)
     return [turma.to_dict() for turma in turmas]
 
 

@@ -19,7 +19,6 @@ api.add_namespace(swagger_config.turmas_ns)
 
 if __name__ == "__main__":
     with app.app_context():
-        # Opcional: Cria tabelas apenas em desenvolvimento
         if app.config['DEBUG']:
             db.create_all()
 

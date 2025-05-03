@@ -12,7 +12,6 @@ professores_model = professor_ns.model("Professores", {
     
 })
 
-#output. É o que vamos enviar/retornar ao usuario. Note que idade e média estão presentes aqui
 professores_output_model = professor_ns.model("ProfessoresOutput", {
     "id": fields.Integer(description="ID do aluno"),
     "nome": fields.String(required=True, description="Nome do professor"),
@@ -23,7 +22,6 @@ professores_output_model = professor_ns.model("ProfessoresOutput", {
 
 @professor_ns.route('/')
 class Professores(Resource):
-    #uso marshal_list_with para retornar uma lista de objetos
     @professor_ns.marshal_list_with(professores_output_model)
     def get(self):
         return read_professor()
@@ -34,14 +32,10 @@ class Professores(Resource):
         resposta= create_professor(dados_turmas)
         return resposta
     
-    #Deletar todos as turmas
     def deleta(self):
         resposta = deleta_professores()
         return resposta
 
-# GET ID
-#DELETA ID
-#PUT
 @professor_ns.route('/<int:id_professor>')
 class ProfessoresId(Resource):
 
