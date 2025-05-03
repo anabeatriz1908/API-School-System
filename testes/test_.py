@@ -1,202 +1,158 @@
-import requests
 import unittest
+from unittest.mock import patch
+from app import app
+from main.Professor.professores_model import ProfessorNaoEncontrado
 
+class TestProfessorController(unittest.TestCase):
+    def setUp(self):
+        self.client = app.test_client()
 
-class TestStringMethods(unittest.TestCase):
-    def test_alunos_read_alunos_01(self):
-        r = requests.get('http://localhost:5036/alunos')
-        self.assertEqual(r.status_code,200)
-        
-        
-    def test_alunos_read_aluno_por_id_02(self):
-        r = requests.post('http://localhost:5036/alunos',json={
-            "nome": "Jonas Adalberto",
-            "turma_id": 3, 
-            "data_nascimento": "27/03/1979", 
-            "nota_primeiro_semestre": 8.4, 
-            "nota_segundo_semestre": 9.2
+#TESTES PROFESSORES
+    @patch('main.Professor.professores_model.create_professor')
+    def test_create_professor_success(self, mock_create):
+        mock_create.return_value = {"message": "Professor adicionado com sucesso!"}
+        payload = {
+            "nome": "Ana", "idade": 35, "materia": "Química", "observacoes": "Muito boa"
+        }
+
+        response = self.client.post('/professores', json=payload)
+        self.assertEqual(response.status_code, 201)
+        self.assertIn("message", response.get_json())
+
+    @patch('main.Professor.professores_model.read_professor')
+    def test_get_professores(self, mock_read):
+        mock_read.return_value = [
+            {"id": 1, "nome": "João", "idade": 40, "materia": "Física", "observacoes": "Atencioso"}
+        ]
+        response = self.client.get('/professores')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get_json()[0]['nome'], "João")
+
+    @patch('main.Professor.professores_model.read_professor_id')
+    def test_get_professor_id_found(self, mock_read_id):
+        mock_read_id.return_value = {
+            "id": 1, "nome": "João", "idade": 40, "materia": "Física", "observacoes": "Atencioso"
+        }
+        response = self.client.get('/professores/1')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get_json()['nome'], "João")
+
+    @patch('main.Professor.professores_model.read_professor_id')
+    def test_get_professor_id_not_found(self, mock_read_id):
+        mock_read_id.side_effect = ProfessorNaoEncontrado
+        response = self.client.get('/professores/999')
+        self.assertEqual(response.status_code, 404)
+        self.assertIn("erro", response.get_json())
+
+    @patch('main.Professor.professores_model.create_professor')
+    def test_create_professor_erro(self, mock_create):
+        mock_create.side_effect = ValueError("Dados inválidos")
+        response = self.client.post('/professores', json={})
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("erro", response.get_json())
+
+    @patch('main.Professor.professores_model.update_professores')
+    @patch('main.Professor.professores_model.read_professor_id')
+    def test_update_professor_sucesso(self, mock_read, mock_update):
+        mock_update.return_value = {"message": "Professor atualizado com sucesso!"}
+        mock_read.return_value = {
+            "id": 1, "nome": "João", "idade": 45, "materia": "Física", "observacoes": "Atualizado"
+        }
+        payload = {
+            "nome": "João", "idade": 45, "materia": "Física", "observacoes": "Atualizado"
+        }
+        response = self.client.put('/professores/1', json=payload)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get_json()['idade'], 45)
+
+    @patch('main.Professor.professores_model.update_professores')
+    def test_update_professor_nao_encontrado(self, mock_update):
+        mock_update.side_effect = ProfessorNaoEncontrado
+        response = self.client.put('/professores/999', json={
+            "nome": "X", "idade": 22, "materia": "História", "observacoes": "Nada"
         })
-        resposta = requests.get('http://localhost:5036/alunos/93')
-        self.assertEqual(resposta.status_code,200)
-        dict_retornado = resposta.json() 
-        self.assertEqual(type(dict_retornado),dict)
-        self.assertIn("nome",dict_retornado)
-        self.assertEqual(dict_retornado["nome"], "Jonas Adalberto")
+        self.assertEqual(response.status_code, 404)
 
+    @patch('main.Professor.professores_model.delete_professor')
+    def test_delete_professor_sucesso(self, mock_delete):
+        mock_delete.return_value = {"message": "Professor excluido com sucesso!"}
+        response = self.client.delete('/professores/1')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("message", response.get_json())
 
-    def test_alunos_update_03(self):
+    @patch('main.Professor.professores_model.delete_professor')
+    def test_delete_professor_nao_encontrado(self, mock_delete):
+        mock_delete.side_effect = ProfessorNaoEncontrado
+        response = self.client.delete('/professores/999')
+        self.assertEqual(response.status_code, 404)
+        self.assertIn("erro", response.get_json())
 
-        r_reset = requests.delete('http://localhost:5036/alunos')
-        self.assertEqual(r_reset.status_code,200)
-
-        r_post = requests.post('http://localhost:5036/alunos',json={
-            "nome": "Cícero", 
-            "turma_id": 3, 
-            "data_nascimento": "26/03/1978", 
-            "nota_primeiro_semestre": 8.4, 
-            "nota_segundo_semestre": 9.2
+#TESTES DE TURMAS
+    @patch("main.Turma.turmas_model.create_turmas")
+    def test_create_turma_sucesso(self, mock_create):
+        mock_create.return_value = {"message": "Turma criada com sucesso!"}
+        response = self.client.post('/turmas', json={
+            "descricao": "Lógica da Programação",
+            "professor_id": 200,
+            "ativo": True
         })
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("message", response.get_json())
 
-        self.assertEqual(r_post.status_code, 200, f"Erro ao criar aluno: {r_post.text}")
+    @patch("main.Turma.turmas_model.create_turmas")
+    def test_create_turma_valores_nulos(self, mock_create):
+        mock_create.side_effect = Exception("dados inválidos")
+        response = self.client.post('/turmas', json={})
+        self.assertEqual(response.status_code, 500)
 
-        r_antes = requests.get('http://localhost:5036/alunos/87')
-        self.assertEqual(r_antes.status_code,200)
-        requests.put('http://localhost:5036/alunos/87', json={ "nome": "Cícero Gonçalves"})
+    @patch("main.Turma.turmas_model.read_turmas")
+    def test_read_turmas(self, mock_read):
+        mock_read.return_value = ([{"id": 1, "descricao": "Test", "ativo": True, "professor_id": 200}], None)
+        response = self.client.get('/turmas')
+        self.assertEqual(response.status_code, 200)
 
-        r_depois = requests.get('http://localhost:5036/alunos/87')
-        self.assertEqual(r_depois.json()["nome"],"Cícero Gonçalves")
+    @patch("main.Turma.turmas_model.read_turma_id")
+    def test_read_turma_id_nao_encontrado(self, mock_read):
+        mock_read.return_value = None
+        response = self.client.get('/turmas/999')
+        self.assertEqual(response.status_code, 404)
 
-
-    def test_alunos_deleta_todos_alunos_04(self):
-        r = requests.post('http://localhost:5036/alunos',json={
-            "id": 87, 
-            "nome": "Cícero Gonçalves", 
-            "idade": 47, 
-            "turma_id": 310, 
-            "data_nascimento": "26/03/1978", 
-            "nota_primeiro_semestre": 8.4, 
-            "nota_segundo_semestre": 9.2
+    @patch("main.Turma.turmas_model.update_turma")
+    @patch("main.Turma.turmas_model.read_turma_id")
+    def test_update_turma_sucesso(self, mock_read, mock_update):
+        mock_update.return_value = ({"message": "Turma atualizada com sucesso!"}, None)
+        mock_read.return_value = {"id": 378, "descricao": "Nova descrição", "ativo": True, "professor_id": 200}
+        response = self.client.put('/turmas/378', json={
+            "descricao": "Nova descrição",
+            "ativo": True,
+            "professor_id": 200
         })
-        r_lista = requests.get('http://localhost:5036/alunos')
-        r_reset = requests.delete('http://localhost:5036/alunos')
-        self.assertEqual(r_reset.status_code,200)
+        self.assertEqual(response.status_code, 200)
 
-        r_lista_depois = requests.get('http://localhost:5036/alunos')
-        self.assertEqual(len(r_lista_depois.json()),0)
-
-
-    def test_alunos_deleta_por_id_05(self):
-
-        r_reset = requests.delete('http://localhost:5036/alunos')
-        self.assertEqual(r_reset.status_code,200)
-
-        requests.post('http://localhost:5036/alunos',json={
-            "id": 87, 
-            "nome": "Cícero Gonçalves", 
-            "idade": 47, "turma_id": 310, 
-            "data_nascimento": "26/03/1978", 
-            "nota_primeiro_semestre": 8.4, 
-            "nota_segundo_semestre": 9.2
+    @patch("main.Turma.turmas_model.update_turma")
+    def test_update_turma_nao_encontrado(self, mock_update):
+        mock_update.return_value = (None, "Turma não encontrada")
+        response = self.client.put('/turmas/999', json={
+            "descricao": "Nova",
+            "ativo": True,
+            "professor_id": 200
         })
-        r_lista = requests.get('http://localhost:5036/alunos')
-        lista_retornada = r_lista.json()
-        self.assertEqual(len(lista_retornada),1)
+        self.assertEqual(response.status_code, 404)
 
-        requests.delete('http://localhost:5036/alunos/87')
-        self.assertEqual(r_reset.status_code,200)
+    @patch("main.Turma.turmas_model.delete_turma_por_id")
+    def test_delete_turma_sucesso(self, mock_delete):
+        mock_delete.return_value = True
+        response = self.client.delete('/turmas/369')
+        self.assertEqual(response.status_code, 200)
 
-        r_lista2 = requests.get('http://localhost:5036/alunos')
-        self.assertEqual(r_lista2.status_code,200)
+    @patch("main.Turma.turmas_model.delete_turma_por_id")
+    def test_delete_turma_nao_encontrado(self, mock_delete):
+        mock_delete.return_value = None
+        response = self.client.delete('/turmas/999')
+        self.assertEqual(response.status_code, 404)
 
-    def test_professores_read_06(self):
-            dados = requests.get("http://localhost:5036/professores")
-            self.assertEqual(dados.status_code, 200)
-
-    def test_professores_read_id_07(self):
-        dados = requests.get("http://localhost:5036/professores/200")
-        self.assertEqual(type(dados.json()), dict)
-        
-    def test_professores_criar_08(self):
-        dados = requests.post("http://localhost:5036/professores", json = {
-             "id": 2, 
-             "nome": "Murillo", 
-             "idade": 20, 
-             "materia": "APIs", 
-             "observacoes": "Provavelmente não dormiu hoje"
-        })
-        resposta = requests.get("http://localhost:5036/professores/2")
-        self.assertEqual(type(resposta.json()), dict)
-
-    def test_professores_update_09(self):
-        antigo = requests.get("http://localhost:5036/professores/200")
-        dados = requests.put("http://localhost:5036/professores/200", json = {"nome": "Outro nome"})
-        atualizado = requests.get("http://localhost:5036/professores/200")
-        self.assertNotEqual (antigo.json(), atualizado.json()) 
-
-    def test_professores_delete_10(self):
-        deletar = requests.delete("http://localhost:5036/professores/2")
-        r = requests.get("http://localhost:5036/professores/2")
-        self.assertEqual(r.status_code, 404)
-
-    def test_professores_criar_id_existente_11(self):
-        create1 = requests.post("http://localhost:5036/professores", json = {
-             "id": 4,
-            "nome": "Murillo", 
-            "idade": 20, 
-            "materia": "APIs", 
-            "observacoes": "Provavelmente não dormiu hoje"
-        })
-        self.assertEqual(create1.status_code, 201) 
-        create2 = requests.post("http://localhost:5036/professores", json = {
-             "id": 4, 
-             "nome": "Caio", 
-             "idade": 25, 
-             "materia": "APIs", 
-             "observacoes": "Tatuagens maneiras"
-        })
-        self.assertEqual(create2.status_code, 400)
-
-    def test_turmas_create_12(self):
-
-        turma_a = requests.post('http://localhost:5036/turmas', json={"id" : 320, "descricao": "Lógica da Programação", "professor_id": 200, "ativo": True})
-        r_turma_a = requests.get('http://localhost:5036/turmas/320')
-        self.assertEqual(r_turma_a.status_code,200)
-
-        turma_b = requests.post('http://localhost:5036/turmas', json={"id" : 399, "descricao": "Soft Skills", "professor_id": 200, "ativo": True})
-        r_turma_b = requests.get('http://localhost:5036/turmas/399')
-
-    def test_turmas_create_valores_nulos_13(self):
-
-        turma = requests.post('http://localhost:5036/turmas', json={"descricao": "Lógica da Programação", "professor_id": 200, "ativo": True})
-        self.assertEqual(turma.status_code, 400)
-
-        turma_a = requests.post('http://localhost:5036/turmas', json={"id": 360, "descricao": "Lógica da Programação", "ativo": True})
-        self.assertEqual(turma_a.status_code, 400)
-
-        turma_b = turma_a = requests.post('http://localhost:5036/turmas', json={"id": 360, "professor_id": 200, "ativo": True})
-        self.assertEqual(turma_b.status_code, 400)
-
-
-    def test_turmas_read_14(self):
-         turma_total = requests.get('http://localhost:5036/turmas')
-         self.assertEqual(turma_total.status_code,200)
-
-
-    def test_turmas_read_id_15(self):
-         turma = requests.get('http://localhost:5036/turmas/7800')
-         self.assertEqual(turma.status_code,404)
-
-
-    def test_turmas_upload_16(self):
-         #Vou criar uma turma
-         turma = requests.post('http://localhost:5036/turmas', json={"id":378, "descricao": "Introdução ao Calculo IO", "ativo":True,"professor_id":200})
-         self.assertEqual(turma.status_code,200) #Vejo se minha turma foi criada
-         p_turma = requests.put('http://localhost:5036/turmas/378', json = {"descricao": "Introdução a Calculo II"})
-         self.assertEqual(p_turma.status_code,200)
-
-
-    def test_turmas_upload_id_nao_encontrado_17(self):
-        turma = requests.put('http://localhost:5036/turmas/478', json={"ativo": False})
-        self.assertEqual(turma.status_code,404)
-
-
-    def test_turmas_delete_18(self):
-        requests.post('http://localhost:5036/turmas', json={"id":369, "descricao": "Engenharia de Requisitos", "professor_id": 201, "ativo": True} )
-        c_turma = requests.get('http://localhost:5036/turmas/369')
-        self.assertEqual(c_turma.status_code, 200)
-
-        d_turma = requests.delete('http://localhost:5036/turmas/369')
-        self.assertEqual(d_turma.status_code, 200)
-    
-    def test_turmas_reseta_19(self):
-        limpa = requests.delete('http://localhost:5036/turmas')
-        self.assertEqual(limpa.status_code,200)
-
-
-def runTests():
-        suite = unittest.defaultTestLoader.loadTestsFromTestCase(TestStringMethods)
-        unittest.TextTestRunner(verbosity=2,failfast=True).run(suite)
-
-
-if __name__ == '__main__':
-    runTests()
+    @patch("main.Turma.turmas_model.deleta_turmas")
+    def test_delete_turmas_todas(self, mock_delete):
+        mock_delete.return_value = (True, None)
+        response = self.client.delete('/turmas')
+        self.assertEqual(response.status_code, 200)
