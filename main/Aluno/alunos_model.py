@@ -59,13 +59,13 @@ class AlunoNaoEncontrado(Exception):
 
 def create_alunos(aluno):
     # verificando se turma existe
-    turma = Turmas.query.get(aluno["turma_id"])  #rever essa parte, pode dar erro no BD
+    turma = Turmas.query.get(aluno["turma_id"])
     if(turma is None):
         return {"message":"Turma não existe"}
 
     novo_aluno = Alunos(
         nome = aluno["nome"],
-        data_nascimento = datetime.strptime(aluno["data_nascimento"],"%d/%m/%Y"),
+        data_nascimento = datetime.strptime(aluno["data_nascimento"],"%Y-%m-%d").date(),
         nota_primeiro_semestre= float(aluno["nota_primeiro_semestre"]),
         nota_segundo_semestre= float(aluno["nota_segundo_semestre"]),
         turma_id= int(aluno["turma_id"])
@@ -76,8 +76,6 @@ def create_alunos(aluno):
     return {"message":"Aluno adicionado com sucesso"} 
 
     
-    # professor colocou igual em baixo
-    # return {"message": "Aluno adicionado com sucesso"},201  
 
 def read_alunos():
     alunos = Alunos.query.all()
@@ -97,13 +95,15 @@ def update_alunos(id_aluno, dados_atualizados):
     aluno = Alunos.query.get(id_aluno)
     if not aluno:
         raise AlunoNaoEncontrado
-
+    
+    data_nasc = dados_atualizados.get("data_nascimento")
+    
     aluno.nome = dados_atualizados["nome"]
-    aluno.data_nascimento = dados_atualizados["data_nascimento"]
+    aluno.data_nascimento = datetime.strptime(data_nasc, "%Y-%m-%d").date() if isinstance(data_nasc, str) else data_nasc
     aluno.nota_primeiro_semestre = dados_atualizados["nota_primeiro_semestre"]
     aluno.nota_segundo_semestre = dados_atualizados["nota_segundo_semestre"]
     aluno.media_final = aluno.calcular_media()
-    aluno.turma_id = aluno["turma_id"]
+    aluno.turma_id = dados_atualizados["turma_id"]
     aluno.idade = aluno.calcular_idade()
 
     db.session.commit()

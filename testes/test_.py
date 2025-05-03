@@ -10,10 +10,8 @@ class TestStringMethods(unittest.TestCase):
         
     def test_alunos_read_aluno_por_id_02(self):
         r = requests.post('http://localhost:5036/alunos',json={
-            "id": 93,
             "nome": "Jonas Adalberto",
-            "idade": 47, 
-            "turma_id": 310, 
+            "turma_id": 3, 
             "data_nascimento": "27/03/1979", 
             "nota_primeiro_semestre": 8.4, 
             "nota_segundo_semestre": 9.2
@@ -32,10 +30,8 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(r_reset.status_code,200)
 
         r_post = requests.post('http://localhost:5036/alunos',json={
-            "id": 87, 
             "nome": "Cícero", 
-            "idade": 47, 
-            "turma_id": 310, 
+            "turma_id": 3, 
             "data_nascimento": "26/03/1978", 
             "nota_primeiro_semestre": 8.4, 
             "nota_segundo_semestre": 9.2

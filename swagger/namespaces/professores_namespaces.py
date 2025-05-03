@@ -50,7 +50,7 @@ class ProfessoresId(Resource):
         return read_professor_id(id_professor)
     
     @professor_ns.expect(professores_model)
-    def post(self, id_professor):
+    def put(self, id_professor):
         dados_turmas = professor_ns.payload
         resposta= update_professores(id_professor, dados_turmas)
         return resposta

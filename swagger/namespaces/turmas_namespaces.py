@@ -50,7 +50,7 @@ class TurmasID(Resource):
         return read_turma_id(id_turma)
     
     @turmas_ns.expect(turmas_model)
-    def post(self, id_turma):
+    def put(self, id_turma):
         dados_turmas = turmas_ns.payload
         resposta = update_turma(id_turma, dados_turmas)
         return resposta
