@@ -8,7 +8,7 @@ class Turmas(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     descricao = db.Column(db.String(100), nullable=False)
-    ativo = db.Column(db.Bool, nullable=False)
+    ativo = db.Column(db.Boolean, nullable=False)
 
     alunos = db.relationship("Alunos", back_populates="turmas")
     professor_id = db.Column(db.Integer, db.ForeignKey("professores.id"), nullable=False)
