@@ -7,7 +7,7 @@ professores_model = professor_ns.model("Professores", {
     "nome": fields.String(required=True, description="Nome do professor"),
     "materia": fields.String(required=True, description="Materia lecionada"),
     "observacoes": fields.String(required=True, description="Observacoes acerca do professor"),
-    "descricao": fields.String(required=True, description="Descricao da materia"),
+    "idade": fields.Integer(required=True, description="Idade do professor"),
     
     
 })
@@ -18,7 +18,7 @@ professores_output_model = professor_ns.model("ProfessoresOutput", {
     "nome": fields.String(required=True, description="Nome do professor"),
     "materia": fields.String(required=True, description="Materia lecionada"),
     "observacoes": fields.String(required=True, description="Observacoes acerca do professor"),
-    "descricao": fields.String(required=True, description="Descricao da materia"),
+    "idade": fields.String(required=True, description="Idade do professor"),
 })
 
 @professor_ns.route('/')
@@ -31,13 +31,13 @@ class Professores(Resource):
     @professor_ns.expect(professores_model)
     def post(self):
         dados_turmas = professor_ns.payload
-        resposta, status_code = create_professor(dados_turmas)
-        return resposta, status_code
+        resposta= create_professor(dados_turmas)
+        return resposta
     
     #Deletar todos as turmas
     def deleta(self):
-        resposta, status_code = deleta_professores()
-        return resposta, status_code
+        resposta = deleta_professores()
+        return resposta
 
 # GET ID
 #DELETA ID
@@ -52,9 +52,9 @@ class ProfessoresId(Resource):
     @professor_ns.expect(professores_model)
     def post(self, id_professor):
         dados_turmas = professor_ns.payload
-        resposta, status_code = update_professores(id_professor, dados_turmas)
-        return resposta, status_code
+        resposta= update_professores(id_professor, dados_turmas)
+        return resposta
     
     def delete(self, id_professor):
-        resposta, status_code = delete_professor(id_professor)
-        return resposta, status_code
+        resposta = delete_professor(id_professor)
+        return resposta

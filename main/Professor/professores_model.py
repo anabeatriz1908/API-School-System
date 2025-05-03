@@ -36,7 +36,7 @@ def create_professor(dados_professores):
 
     db.session.add(novo_professor)
     db.session.commit()
-    return "Professor adicionado com sucesso!", None #verificar se essa mensagem funciona
+    return {"message":"Professor adicionado com sucesso!"}
 
 
 def read_professor():
@@ -66,6 +66,7 @@ def update_professores(id_professor, dados_professor):
 
     db.session.commit()
 
+    return {"message": "Professor atualizado com sucesso!"}
 
 def deleta_professores():
     professores = Professores.query.all()
@@ -73,6 +74,7 @@ def deleta_professores():
         db.session.delete(professor)
     db.session.commit()
 
+    return {"message":"Professores excluidos com sucesso!"}
 
 def delete_professor(id_professor):
     professor = Professores.query.get(id_professor)
@@ -81,3 +83,5 @@ def delete_professor(id_professor):
     
     db.session.delete(professor)
     db.session.commit()
+
+    return {"message":"Professor excluido com sucesso!"}

@@ -61,19 +61,19 @@ def create_alunos(aluno):
     # verificando se turma existe
     turma = Turmas.query.get(aluno["turma_id"])  #rever essa parte, pode dar erro no BD
     if(turma is None):
-        return "Turma não existe", None
+        return {"message":"Turma não existe"}
 
     novo_aluno = Alunos(
         nome = aluno["nome"],
-        data_nascimento = datetime.strptime(aluno["data_nascimento"],),
-        nota_primeiro_semestre= float(aluno["nota_primeiro_semestre="]),
-        nota_segundo_semestre= float(aluno["nota_segundo_semestre="]),
+        data_nascimento = datetime.strptime(aluno["data_nascimento"],"%d/%m/%Y"),
+        nota_primeiro_semestre= float(aluno["nota_primeiro_semestre"]),
+        nota_segundo_semestre= float(aluno["nota_segundo_semestre"]),
         turma_id= int(aluno["turma_id"])
     )
 
     db.session.add(novo_aluno)
     db.session.commit()
-    return "Aluno adicionado com sucesso", None # verificar se essa mensagem vai passar
+    return {"message":"Aluno adicionado com sucesso"} 
 
     
     # professor colocou igual em baixo
@@ -108,6 +108,7 @@ def update_alunos(id_aluno, dados_atualizados):
 
     db.session.commit()
 
+    return {"message": "Aluno atualizado com sucesso!"}
 
 def delete_aluno(id_aluno):
     aluno = Alunos.query.get(id_aluno)
@@ -115,7 +116,7 @@ def delete_aluno(id_aluno):
         raise AlunoNaoEncontrado(f'Aluno não encontrado.')
     db.session.delete(aluno)
     db.session.commit()
-    return True
+    return {"message":"Aluno deletado com sucesso!"}
 
 
 # Verificar se essa função funciona corretamente
@@ -124,4 +125,4 @@ def delete_alunos():
     for aluno in alunos:
         db.session.delete(aluno)
     db.session.commit
-    return True, None
+    return {'message':"Alunos deletados com sucesso!"}

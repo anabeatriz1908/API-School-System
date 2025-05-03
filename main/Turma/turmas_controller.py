@@ -8,9 +8,7 @@ turmas_blueprint = Blueprint('turmas', __name__)
 def cria_turmas():
     dados = request.get_json()
     try:
-        novo_turma, erro = turmas_model.create_turmas(dados)
-        if erro:
-            return jsonify({'erro': erro}), 400
+        novo_turma = turmas_model.create_turmas(dados)
         return jsonify(novo_turma), 200
     except Exception as e:
         return jsonify({'erro': str(e)}), 500

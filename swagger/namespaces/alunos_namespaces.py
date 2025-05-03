@@ -8,7 +8,7 @@ alunos_ns = Namespace("alunos", description="Alunos do sistema escolar")
 aluno_model = alunos_ns.model("Alunos", {
     "nome": fields.String(required=True, description="Nome do aluno"),
     "turma_id": fields.Integer(required=True, description="ID da turma associada"),
-    "data_nascimento": fields.String(required=True, description="Data de nascimento (YYYY-MM-DD)"),
+    "data_nascimento": fields.String(required=True, description="Data de nascimento (DD/MM/YYYY)"),
     "nota_primeiro_semestre": fields.Float(required=True, description="Nota do primeiro semestre"),
     "nota_segundo_semestre": fields.Float(required=True, description="Nota do segundo semestre"),
     
@@ -19,7 +19,7 @@ aluno_output_model = alunos_ns.model("AlunoOutput", {
     "id": fields.Integer(description="ID do aluno"),
     "nome": fields.String(description="Nome do aluno"),
     "idade": fields.Integer(description="Idade do aluno"),
-    "data_nascimento": fields.String(description="Data de nascimento (YYYY-MM-DD)"),
+    "data_nascimento": fields.String(description="Data de nascimento (DD/MM/YYYY)"),
     "nota_primeiro_semestre": fields.Float(description="Nota do primeiro semestre"),
     "nota_segundo_semestre": fields.Float(description="Nota do segundo semestre"),
     "media_final": fields.Float(description="Média final do aluno"),
@@ -43,12 +43,9 @@ class Alunos(Resource):
     def post(self):
         """Cria um novo aluno"""
         data = alunos_ns.payload
-        response, status_code = create_alunos(data)
-        return response, status_code
-    
+        return create_alunos(data) 
     def delete(sef):
-        delete_alunos()
-        return {"message":"Lista com os alunos resetados"}
+        return delete_alunos()
 
 @alunos_ns.route("/<int:id_aluno>")
 class AlunoId(Resource):
@@ -67,11 +64,10 @@ class AlunoId(Resource):
     @alunos_ns.expect(aluno_model)
     def put(self, id_aluno):
         data = alunos_ns.payload
-        update_alunos(id_aluno, data)
-        return data, 200
+        return update_alunos(id_aluno, data)
+
 
 
     #DELETAR ALUNO POR ID
     def delete(self, id_aluno):
-        delete_aluno(id_aluno)
-        return {"message": "Aluno excluído com sucesso"}, 200
+        return delete_aluno(id_aluno)

@@ -31,13 +31,13 @@ class Turmas(Resource):
     @turmas_ns.expect(turmas_model)
     def post(self):
         dados_turmas = turmas_ns.payload
-        resposta, status_code = create_turmas(dados_turmas)
-        return resposta, status_code
+        resposta = create_turmas(dados_turmas)
+        return resposta
     
     #Deletar todos as turmas
     def deleta(self):
-        resposta, status_code = deleta_turmas()
-        return resposta, status_code
+        resposta = deleta_turmas()
+        return resposta
 
 # GET ID
 #DELETA ID
@@ -52,9 +52,9 @@ class TurmasID(Resource):
     @turmas_ns.expect(turmas_model)
     def post(self, id_turma):
         dados_turmas = turmas_ns.payload
-        resposta, status_code = update_turma(id_turma, dados_turmas)
-        return resposta, status_code
+        resposta = update_turma(id_turma, dados_turmas)
+        return resposta
     
     def delete(self, id_turma):
-        resposta, status_code = delete_turma_por_id(id_turma)
-        return resposta, status_code
+        resposta = delete_turma_por_id(id_turma)
+        return resposta

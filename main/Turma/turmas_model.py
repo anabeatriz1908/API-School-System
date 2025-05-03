@@ -49,6 +49,8 @@ def create_turmas(dados_turmas):
     db.session.add(nova_turma)
     db.session.commit()
 
+    return {'message': "Turma criada com sucesso!"}
+
 
 def read_turmas():
     turmas = Turmas.query.all()
@@ -60,6 +62,8 @@ def read_turma_id(id_turma):
     turma = Turmas.query.get(id_turma)
     if turma is None:
         raise TurmaNaoEncontrada
+    else:
+        return turma.to_dict()
 
 
 def update_turma(id_turma, dados_turmas):
@@ -74,6 +78,8 @@ def update_turma(id_turma, dados_turmas):
 
     db.session.commit()
 
+    return {"message": "Turma atualizada com sucesso!"}
+
 
 def delete_turma_por_id(id_turma):
     turma = Turmas.query.get(id_turma)
@@ -84,10 +90,11 @@ def delete_turma_por_id(id_turma):
     db.session.delete(turma)
     db.session.commit()
 
+    return {"message":"Turma excluida com sucesso!"}
 
 def deleta_turmas():
     turmas = Turmas.query.all()
     for turma in turmas:
         db.session.delete(turma)
     db.session.commit()
-    return True, None
+    return {"message":"Turmas excluidas com sucesso!"}
