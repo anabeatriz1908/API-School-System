@@ -2,19 +2,26 @@ import unittest
 from unittest.mock import patch
 from app import app
 from main.Professor.professores_model import ProfessorNaoEncontrado
+from main.Aluno.alunos_model import AlunoNaoEncontrado
 
 class TestProfessorController(unittest.TestCase):
     def setUp(self):
-        self.client = app.test_client()
+        self.app = app
+        self.app.config['TESTING'] = True
+        self.client = self.app.test_client()
+        self.app_context = self.app.app_context()
+        self.app_context.push()
 
-#TESTES PROFESSORES
+    def tearDown(self):
+        self.app_context.pop()
+
+    # TESTES PROFESSORES
     @patch('main.Professor.professores_model.create_professor')
     def test_create_professor_success(self, mock_create):
         mock_create.return_value = {"message": "Professor adicionado com sucesso!"}
         payload = {
             "nome": "Ana", "idade": 35, "materia": "Química", "observacoes": "Muito boa"
         }
-
         response = self.client.post('/professores', json=payload)
         self.assertEqual(response.status_code, 201)
         self.assertIn("message", response.get_json())
@@ -87,7 +94,18 @@ class TestProfessorController(unittest.TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertIn("erro", response.get_json())
 
-#TESTES DE TURMAS
+class TestTurmaController(unittest.TestCase):
+    def setUp(self):
+        self.app = app
+        self.app.config['TESTING'] = True
+        self.client = self.app.test_client()
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+
+    def tearDown(self):
+        self.app_context.pop()
+
+    # TESTES DE TURMAS
     @patch("main.Turma.turmas_model.create_turmas")
     def test_create_turma_sucesso(self, mock_create):
         mock_create.return_value = {"message": "Turma criada com sucesso!"}
@@ -156,3 +174,105 @@ class TestProfessorController(unittest.TestCase):
         mock_delete.return_value = (True, None)
         response = self.client.delete('/turmas')
         self.assertEqual(response.status_code, 200)
+
+class TestAlunoController(unittest.TestCase):
+    def setUp(self):
+        self.app = app
+        self.app.config['TESTING'] = True
+        self.client = self.app.test_client()
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+
+    def tearDown(self):
+        self.app_context.pop()
+
+    # TESTES POST (2)
+    @patch('main.Aluno.alunos_controller.create_alunos')
+    def test_criar_aluno_sucesso(self, mock_create):
+        mock_create.return_value = ({"message": "Aluno adicionado com sucesso"}, None)
+        payload = {
+            "nome": "Maria Silva",
+            "data_nascimento": "2005-05-15",
+            "nota_primeiro_semestre": 8.5,
+            "nota_segundo_semestre": 7.5,
+            "turma_id": 1
+        }
+        response = self.client.post('/alunos', json=payload)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("message", response.get_json())
+
+    @patch('main.Aluno.alunos_controller.create_alunos')
+    def test_criar_aluno_falha_validacao(self, mock_create):
+        mock_create.return_value = (None, "Dados inválidos")
+        response = self.client.post('/alunos', json={})
+        self.assertEqual(response.status_code, 400)
+
+    # TESTES GET (2)
+    @patch('main.Aluno.alunos_controller.read_alunos')
+    def test_listar_alunos(self, mock_read):
+        mock_read.return_value = ([{
+            "id": 1,
+            "nome": "Maria Silva",
+            "data_nascimento": "2005-05-15",
+            "nota_primeiro_semestre": 8.5,
+            "nota_segundo_semestre": 7.5,
+            "turma_id": 1
+        }], None)
+        response = self.client.get('/alunos')
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(response.get_json(), list)
+
+    @patch('main.Aluno.alunos_controller.read_alunos_id')
+    def test_obter_aluno_por_id(self, mock_read):
+        mock_read.return_value = {
+            "id": 1,
+            "nome": "Maria Silva",
+            "data_nascimento": "2005-05-15",
+            "nota_primeiro_semestre": 8.5,
+            "nota_segundo_semestre": 7.5,
+            "turma_id": 1
+        }
+        response = self.client.get('/alunos/1')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get_json()["id"], 1)
+
+    # TESTES PUT (2)
+    @patch('main.Aluno.alunos_controller.update_alunos')
+    @patch('main.Aluno.alunos_controller.read_alunos_id')
+    def test_atualizar_aluno_sucesso(self, mock_read, mock_update):
+        aluno_atualizado = {
+            "id": 1,
+            "nome": "Maria Silva",
+            "data_nascimento": "2005-05-15",
+            "nota_primeiro_semestre": 9.0,
+            "nota_segundo_semestre": 8.0,
+            "turma_id": 1
+        }
+        mock_update.return_value = aluno_atualizado
+        mock_read.return_value = aluno_atualizado
+        
+        response = self.client.put('/alunos/1', json=aluno_atualizado)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get_json()["nota_primeiro_semestre"], 9.0)
+
+    @patch('main.Aluno.alunos_controller.update_alunos')
+    def test_atualizar_aluno_nao_encontrado(self, mock_update):
+        mock_update.side_effect = AlunoNaoEncontrado("Aluno não encontrado")
+        response = self.client.put('/alunos/999', json={})
+        self.assertEqual(response.status_code, 400)
+
+    # TESTES DELETE (2)
+    @patch('main.Aluno.alunos_controller.delete_aluno')
+    def test_remover_aluno_sucesso(self, mock_delete):
+        mock_delete.return_value = {"message": "Aluno deletado com sucesso!"}
+        response = self.client.delete('/alunos/1')
+        self.assertEqual(response.status_code, 200)
+
+    @patch('main.Aluno.alunos_controller.delete_aluno')
+    def test_remover_aluno_nao_encontrado(self, mock_delete):
+        mock_delete.side_effect = AlunoNaoEncontrado("Aluno não encontrado")
+        response = self.client.delete('/alunos/999')
+        self.assertEqual(response.status_code, 400)
+
+if __name__ == '__main__':
+    unittest.main()
