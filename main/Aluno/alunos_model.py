@@ -84,7 +84,7 @@ def read_alunos_id(id_aluno):
 
     if not aluno:
         raise  AlunoNaoEncontrado(f'Aluno não encontrado.')
-    return Alunos.to_dict()
+    return aluno.to_dict()
 
 
 def update_alunos(id_aluno, dados_atualizados):
