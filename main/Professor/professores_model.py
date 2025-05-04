@@ -1,70 +1,85 @@
-import random
+from config import db
 
-usuarios = {
-    "Professores": [
-        {"id": 200, "nome": "Vitor Furlan", "idade": 31, "materia": "Fundamentos de Banco de Dados", "observacoes": "Chega no horário e é super competente"},
-        {"id": 201, "nome": "Katrina Catarina", "idade": 63, "materia": "Introdução a Estatística", "observacoes": "Tem uma didática excelente e os alunos a amam"}
-    ]
-}
 
-id_usuarios = {
-    "id_alunos": [45, 3],
-    "id_professores": [200, 201],
-    "id_turmas": [300, 301]
-}
+class Professores(db.Model):
+    __tablename__ = "professores"
+
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(100), nullable=False)
+    idade = db.Column(db.Integer, nullable=False)
+    materia = db.Column(db.String(100),nullable=False)
+    observacoes = db.Column(db.String(100),nullable=False)
+
+
+    def to_dict(self):  
+        return {
+            "id": self.id, 
+            "nome": self.nome, 
+            "idade": self.idade, 
+            "materia": self.materia, 
+            "observacoes": self.observacoes}
+
+class ProfessorNaoEncontrado(Exception):
+    pass
+
 
 def create_professor(dados_professores):
-    if "nome" not in dados_professores or dados_professores["nome"].strip() == "":
-        raise ValueError("Professor sem nome")
     
-    
-    if "id" in dados_professores:
-        cria_id = dados_professores["id"]
-        if cria_id in id_usuarios["id_professores"]:
-            raise ValueError("Id já utilizada")
-    else:
-        while True:
-            cria_id = random.randint(100, 199)
-            if cria_id not in id_usuarios["id_professores"]:
-                break
+    novo_professor = Professores(
+        nome = dados_professores['nome'],
+        idade = dados_professores["idade"],
+        materia = dados_professores["materia"],
+        observacoes = dados_professores["observacoes"]
+    )
 
-    id_usuarios["id_professores"].append(cria_id)
-
-    novo_professor = {
-        "id": cria_id,
-        "nome": dados_professores["nome"],
-        "idade": dados_professores["idade"],
-        "materia": dados_professores["materia"],
-        "observacoes": dados_professores["observacoes"]
-    }
-
-    usuarios["Professores"].append(novo_professor)
-    return novo_professor, None
+    db.session.add(novo_professor)
+    db.session.commit()
+    return {"message":"Professor adicionado com sucesso!"}
 
 
 def read_professor():
-    return usuarios["Professores"]
+    professores = Professores.query.all()
+    print(professores)
+    return [professor.to_dict() for professor in professores]
 
 
 def read_professor_id(id_professor):
-    return next((p for p in usuarios["Professores"] if p["id"] == id_professor), None)
+    professor = Professores.query.get(id_professor)
+    if not professor :
+        raise ProfessorNaoEncontrado 
+    else:
+        return professor.to_dict()
 
 
-def update_professores(id_professor, dados_professores):
-    professor = next((p for p in usuarios["Professores"] if p["id"] == id_professor), None)
+def update_professores(id_professor, dados_professor):
+    professor = Professores.query.get(id_professor)
     if not professor:
-        return None, "professor não encontrado"
-    
+        raise ProfessorNaoEncontrado
 
-    for chave, valor in dados_professores.items():
-        professor[chave] = valor
-    
-    return professor, None
 
+    professor.nome = dados_professor["nome"]
+    professor.idade = dados_professor["idade"]
+    professor.materia = dados_professor["materia"]
+    professor.observacoes = dados_professor["observacoes"]
+
+    db.session.commit()
+
+    return {"message": "Professor atualizado com sucesso!"}
+
+def delete_professores():
+    professores = Professores.query.all()
+    for professor in professores:
+        db.session.delete(professor)
+    db.session.commit()
+
+    return {"message":"Professores excluidos com sucesso!"}
 
 def delete_professor(id_professor):
-    professor = next((p for p in usuarios["Professores"] if p["id"] == id_professor), None)
+    professor = Professores.query.get(id_professor)
     if not professor:
-        return False
-    usuarios["Professores"].remove(professor)
-    return True
+        raise ProfessorNaoEncontrado
+    
+    db.session.delete(professor)
+    db.session.commit()
+
+    return {"message":"Professor excluido com sucesso!"}

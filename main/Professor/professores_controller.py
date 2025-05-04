@@ -1,7 +1,9 @@
 from flask import Blueprint, request, jsonify
 from main.Professor import professores_model
+from main.Professor.professores_model import ProfessorNaoEncontrado
 
 professores_blueprint = Blueprint('professores', __name__)
+
 
 @professores_blueprint.route('/professores', methods=['POST'])
 def cria_professor():
@@ -11,6 +13,8 @@ def cria_professor():
         return jsonify(novo_professor), 201
     except ValueError as e:
         return jsonify({'erro': str(e)}), 400
+    except Exception as e:
+        return jsonify({'erro': str(e)}), 500
 
 @professores_blueprint.route('/professores', methods=['GET'])
 def get_professor():
@@ -22,31 +26,44 @@ def get_professor():
 
 @professores_blueprint.route('/professores/<int:id_professor>', methods=['GET'])
 def get_professorID(id_professor):
-    professor = professores_model.read_professor_id(id_professor)
-    if professor:
+    try:
+        professor = professores_model.read_professor_id(id_professor)
         return jsonify(professor), 200
-    else:
+    except ProfessorNaoEncontrado:
         return jsonify({'erro': 'Professor não encontrado'}), 404
+    except Exception as e:
+        return jsonify({'erro': str(e)}), 500
+
 
 @professores_blueprint.route('/professores/<int:id_professor>', methods=['PUT'])
 def atualiza_professor(id_professor):
     dados = request.json
     try:
-        atualizado = professores_model.update_professores(id_professor, dados)
-        if atualizado:
-            return jsonify(professores_model.read_professor_id(id_professor)), 200
-        else:
-            return jsonify({'erro': 'Professor não encontrado'}), 404
+        professores_model.update_professores(id_professor, dados)
+        professor_atualizado = professores_model.read_professor_id(id_professor)
+        return jsonify(professor_atualizado), 200
+    except ProfessorNaoEncontrado:
+        return jsonify({'erro': 'Professor não encontrado'}), 404
     except Exception as e:
         return jsonify({'erro': str(e)}), 400
 
+
 @professores_blueprint.route('/professores/<int:id_professor>', methods=['DELETE'])
-def deleta_professor(id_professor):
+def delete_professor(id_professor):
     try:
         deletado = professores_model.delete_professor(id_professor)
-        if deletado:
-            return jsonify({'mensagem': 'Professor deletado com sucesso'}), 200
-        else:
-            return jsonify({'erro': 'Professor não encontrado'}), 404
+        return jsonify(deletado), 200
+    except ProfessorNaoEncontrado:
+        return jsonify({'erro': 'Professor não encontrado'}), 404
     except Exception as e:
         return jsonify({'erro': str(e)}), 400
+    
+@professores_blueprint.route('/professores', methods=['DELETE'])
+def delete_professores():
+    try:
+        deletada, erro = professores_model.delete_professores()
+        if erro:
+            return jsonify({'erro': erro}), 400
+        return jsonify({'mensagem': 'Todos os professores foram deletados'}), 200
+    except Exception as e:
+        return jsonify({'erro': str(e)}), 500
