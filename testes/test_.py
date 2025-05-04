@@ -180,8 +180,7 @@ class TestAlunoController(unittest.TestCase):
     def tearDown(self):
         self.app_context.pop()
 
-
-    @patch('main.Aluno.alunos_controller.create_alunos')
+    @patch('main.Aluno.alunos_model.create_alunos')
     def test_criar_aluno_sucesso_18(self, mock_create):
         mock_create.return_value = ({"message": "Aluno adicionado com sucesso"}, None)
         payload = {
@@ -195,14 +194,13 @@ class TestAlunoController(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("message", response.get_json())
 
-    @patch('main.Aluno.alunos_controller.create_alunos')
+    @patch('main.Aluno.alunos_model.create_alunos')
     def test_criar_aluno_falha_validacao_19(self, mock_create):
         mock_create.return_value = (None, "Dados inválidos")
         response = self.client.post('/alunos', json={})
         self.assertEqual(response.status_code, 400)
 
-    # TESTES GET (2)
-    @patch('main.Aluno.alunos_controller.read_alunos')
+    @patch('main.Aluno.alunos_model.read_alunos')
     def test_listar_alunos_21(self, mock_read):
         mock_read.return_value = ([{
             "id": 1,
@@ -216,7 +214,7 @@ class TestAlunoController(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response.get_json(), list)
 
-    @patch('main.Aluno.alunos_controller.read_alunos_id')
+    @patch('main.Aluno.alunos_model.read_alunos_id')
     def test_obter_aluno_por_id_21(self, mock_read):
         mock_read.return_value = {
             "id": 1,
@@ -230,9 +228,8 @@ class TestAlunoController(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.get_json()["id"], 1)
 
-
-    @patch('main.Aluno.alunos_controller.update_alunos')
-    @patch('main.Aluno.alunos_controller.read_alunos_id')
+    @patch('main.Aluno.alunos_model.update_alunos')
+    @patch('main.Aluno.alunos_model.read_alunos_id')
     def test_atualizar_aluno_sucesso_22(self, mock_read, mock_update):
         aluno_atualizado = {
             "id": 1,
@@ -249,24 +246,25 @@ class TestAlunoController(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.get_json()["nota_primeiro_semestre"], 9.0)
 
-    @patch('main.Aluno.alunos_controller.update_alunos')
+    @patch('main.Aluno.alunos_model.update_alunos') 
     def test_atualizar_aluno_nao_encontrado_23(self, mock_update):
         mock_update.side_effect = AlunoNaoEncontrado("Aluno não encontrado")
         response = self.client.put('/alunos/999', json={})
         self.assertEqual(response.status_code, 400)
 
-
-    @patch('main.Aluno.alunos_controller.delete_aluno')
+    @patch('main.Aluno.alunos_model.delete_aluno')
     def test_remover_aluno_sucesso_24(self, mock_delete):
         mock_delete.return_value = {"message": "Aluno deletado com sucesso!"}
         response = self.client.delete('/alunos/1')
         self.assertEqual(response.status_code, 200)
 
-    @patch('main.Aluno.alunos_controller.delete_aluno')
+    @patch('main.Aluno.alunos_model.delete_aluno') 
     def test_remover_aluno_nao_encontrado_25(self, mock_delete):
         mock_delete.side_effect = AlunoNaoEncontrado("Aluno não encontrado")
         response = self.client.delete('/alunos/999')
         self.assertEqual(response.status_code, 400)
+
+
 
 if __name__ == '__main__':
     unittest.main()
