@@ -1,6 +1,8 @@
 from flask import Blueprint, request, jsonify
 from main.Aluno.alunos_model import *
 
+from config import db
+
 alunos_blueprint = Blueprint('alunos', __name__)
 
 		
