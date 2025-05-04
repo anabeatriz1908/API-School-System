@@ -10,3 +10,5 @@ Uatila dos Santos Silva - 2400250
 
 
 link: https://apischoolsystem.onrender.com/docs
+
+link feito com imagem docker: https://devapi-latest-2w6v.onrender.com/docs
