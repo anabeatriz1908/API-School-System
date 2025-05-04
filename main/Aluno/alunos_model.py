@@ -120,5 +120,5 @@ def delete_alunos():
     alunos = Alunos.query.all()
     for aluno in alunos:
         db.session.delete(aluno)
-    db.session.commit
+    db.session.commit()
     return {'message':"Alunos deletados com sucesso!"}

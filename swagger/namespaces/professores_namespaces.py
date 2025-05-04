@@ -32,9 +32,9 @@ class Professores(Resource):
         resposta= create_professor(dados_turmas)
         return resposta
     
-    def deleta(self):
-        resposta = deleta_professores()
-        return resposta
+    def delete(self):
+        return delete_professores()
+
 
 @professor_ns.route('/<int:id_professor>')
 class ProfessoresId(Resource):

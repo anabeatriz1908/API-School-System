@@ -66,7 +66,7 @@ def update_professores(id_professor, dados_professor):
 
     return {"message": "Professor atualizado com sucesso!"}
 
-def deleta_professores():
+def delete_professores():
     professores = Professores.query.all()
     for professor in professores:
         db.session.delete(professor)

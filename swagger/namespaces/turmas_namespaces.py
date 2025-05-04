@@ -28,8 +28,8 @@ class Turmas(Resource):
         resposta = create_turmas(dados_turmas)
         return resposta
     
-    def deleta(self):
-        resposta = deleta_turmas()
+    def delete(self):
+        resposta = delete_turmas()
         return resposta
 
 @turmas_ns.route('/<int:id_turma>')

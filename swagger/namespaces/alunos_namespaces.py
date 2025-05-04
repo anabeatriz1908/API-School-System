@@ -7,7 +7,7 @@ alunos_ns = Namespace("alunos", description="Alunos do sistema escolar")
 aluno_model = alunos_ns.model("Alunos", {
     "nome": fields.String(required=True, description="Nome do aluno"),
     "turma_id": fields.Integer(required=True, description="ID da turma associada"),
-    "data_nascimento": fields.String(required=True, description="Data de nascimento (YYYY/MM/DD)"),
+    "data_nascimento": fields.String(required=True, description="Data de nascimento (YYYY-MM-DD)"),
     "nota_primeiro_semestre": fields.Float(required=True, description="Nota do primeiro semestre"),
     "nota_segundo_semestre": fields.Float(required=True, description="Nota do segundo semestre"),
     
@@ -18,7 +18,7 @@ aluno_output_model = alunos_ns.model("AlunoOutput", {
     "id": fields.Integer(description="ID do aluno"),
     "nome": fields.String(description="Nome do aluno"),
     "idade": fields.Integer(description="Idade do aluno"),
-    "data_nascimento": fields.String(description="Data de nascimento (YYYY/MM/DD)"),
+    "data_nascimento": fields.String(description="Data de nascimento (YYYY-MM-DD)"),
     "nota_primeiro_semestre": fields.Float(description="Nota do primeiro semestre"),
     "nota_segundo_semestre": fields.Float(description="Nota do segundo semestre"),
     "media_final": fields.Float(description="Média final do aluno"),
@@ -28,8 +28,6 @@ aluno_output_model = alunos_ns.model("AlunoOutput", {
 
 @alunos_ns.route("/")
 class Alunos(Resource):
-
-
     @alunos_ns.marshal_list_with(aluno_output_model)
     def get(self):
         #Lista com todos os alunos
@@ -37,10 +35,9 @@ class Alunos(Resource):
 
     @alunos_ns.expect(aluno_model)
     def post(self):
-        """Cria um novo aluno"""
         data = alunos_ns.payload
         return create_alunos(data) 
-    def delete(sef):
+    def delete(self):
         return delete_alunos()
 
 @alunos_ns.route("/<int:id_aluno>")
@@ -52,7 +49,6 @@ class AlunoId(Resource):
     
     @alunos_ns.expect(aluno_model)
     def get(self, id_aluno):
-        """Obtém um aluno pelo ID"""
         return read_alunos_id(id_aluno)
 
     @alunos_ns.expect(aluno_model)

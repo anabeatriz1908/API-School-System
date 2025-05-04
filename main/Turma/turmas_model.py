@@ -90,7 +90,7 @@ def delete_turma_por_id(id_turma):
 
     return {"message":"Turma excluida com sucesso!"}
 
-def deleta_turmas():
+def delete_turmas():
     turmas = Turmas.query.all()
     for turma in turmas:
         db.session.delete(turma)

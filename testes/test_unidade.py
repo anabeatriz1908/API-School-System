@@ -21,27 +21,23 @@ class TestAlunoCalculos(unittest.TestCase):
         self.aluno = MockAluno()
     
 
-    def test_calcular_idade_apos_aniversario(self):
-        """Testa cálculo de idade quando já passou a data de aniversário"""
+    def test_calcular_idade_apos_aniversario_01(self):
         hoje_mock = date(2023, 1, 16)
         idade = self.aluno.calcular_idade(hoje_mock)
         self.assertEqual(idade, 23)
     
-    def test_calcular_idade_antes_aniversario(self):
-        """Testa cálculo de idade quando ainda não chegou a data de aniversário"""
+    def test_calcular_idade_antes_aniversario_02(self):
         hoje_mock = date(2023, 1, 14) 
         idade = self.aluno.calcular_idade(hoje_mock)
         self.assertEqual(idade, 22)
     
-    def test_calcular_media_valores_normais(self):
-        """Testa cálculo de média com valores normais"""
+    def test_calcular_media_valores_normais_03(self):
         self.aluno.nota_primeiro_semestre = 6.0
         self.aluno.nota_segundo_semestre = 8.0
         media = float(self.aluno.calcular_media())
         self.assertEqual(media, 7.0)
     
-    def test_calcular_media_arredondamento(self):
-        """Testa se o arredondamento da média está correto"""
+    def test_calcular_media_arredondamento_04(self):
         self.aluno.nota_primeiro_semestre = 7.333
         self.aluno.nota_segundo_semestre = 8.666
         media = float(self.aluno.calcular_media())

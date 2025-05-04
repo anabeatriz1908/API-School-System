@@ -47,10 +47,9 @@ def atualiza_professor(id_professor):
     except Exception as e:
         return jsonify({'erro': str(e)}), 400
 
-from main.Professor.professores_model import ProfessorNaoEncontrado
 
 @professores_blueprint.route('/professores/<int:id_professor>', methods=['DELETE'])
-def deleta_professor(id_professor):
+def delete_professor(id_professor):
     try:
         deletado = professores_model.delete_professor(id_professor)
         return jsonify(deletado), 200
@@ -58,3 +57,13 @@ def deleta_professor(id_professor):
         return jsonify({'erro': 'Professor não encontrado'}), 404
     except Exception as e:
         return jsonify({'erro': str(e)}), 400
+    
+@professores_blueprint.route('/professores', methods=['DELETE'])
+def delete_professores():
+    try:
+        deletada, erro = professores_model.delete_professores()
+        if erro:
+            return jsonify({'erro': erro}), 400
+        return jsonify({'mensagem': 'Todos os professores foram deletados'}), 200
+    except Exception as e:
+        return jsonify({'erro': str(e)}), 500
