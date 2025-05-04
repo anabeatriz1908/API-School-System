@@ -46,10 +46,6 @@ class AlunoId(Resource):
     @alunos_ns.marshal_with(aluno_output_model)
     def get(self, id_aluno):
         return read_alunos_id(id_aluno)
-    
-    @alunos_ns.expect(aluno_model)
-    def get(self, id_aluno):
-        return read_alunos_id(id_aluno)
 
     @alunos_ns.expect(aluno_model)
     def put(self, id_aluno):
