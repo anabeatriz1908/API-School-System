@@ -88,6 +88,7 @@ def read_alunos_id(id_aluno):
 
 
 def update_alunos(id_aluno, dados_atualizados):
+    
     aluno = Alunos.query.get(id_aluno)
     if not aluno:
         raise AlunoNaoEncontrado
