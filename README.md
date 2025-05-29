@@ -58,26 +58,42 @@ A aplicação estará disponível em:
 ## 📡 Endpoints Principais
 
 Alunos:
+
     - `GET /alunos` – Lista todas os alunos
+
     - `POST /alunos` – Cria um novo aluno
+
     - `GET /alunos/<id>` – Detalha um aluno por id
+
     - `DELETE /alunos/<id>` – Deleta aluno por id
+
     - `PUT /alunos/<id>` – Altera aluno por id
 
 
+
 Professores:
+
     - `GET /professores` – Lista todas os professores
+
     - `POST /professores` – Cria um novo professor
+
     - `GET /professores/<id>` – Detalha um professor por id
+
     - `DELETE /professores/<id>` – Deleta professor
+
     - `PUT /professores/<id>` – Altera um professor por id
 
 
 Turmas:
+
     - `GET /turmas` – Lista todas as turmas
+
     - `POST /turmas` – Cria uma nova turma
+
     - `GET /turmas/<id>` – Detalha uma turma por id
+
     - `DELETE /turmas/<id>` – Deleta uma turma por id
+
     - `PUT /turmas/<id>` – Altera uma turma por id
 
 
