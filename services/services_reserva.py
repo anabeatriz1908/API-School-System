@@ -3,30 +3,6 @@ from flask import jsonify, Blueprint, request
 
 api_bp = Blueprint('api_bp', __name__)
 
-@api_bp.route('/teste', methods=['GET'])
-def testa():
-    url = "http://localhost:5001/reservas"
-    try:
-        resposta = requests.get(url)
-        resposta.raise_for_status()  # Lança erro se status != 200
-        dados = resposta.json()
-        return jsonify(dados)
-    
-    except requests.exceptions.RequestException as e:
-        return jsonify({'erro': 'Erro ao acessar a API externa', 'detalhes': str(e)}), 500
-
-@api_bp.route('/reservas', methods=[])
-def validar_turma():
-    url = "http://localhost:5001/reservas"
-    try:
-        resposta = requests.get(url)
-        resposta.raise_for_status()  # Lança erro se status != 200
-        dados = resposta.json()
-        return jsonify(dados)
-    
-    except requests.exceptions.RequestException as e:
-        return jsonify({'erro': 'Erro ao acessar a API externa', 'detalhes': str(e)}), 500
-
 @api_bp.route("/reservas", methods=["POST"])
 def cria_reserva():
     url = "http://localhost:5001/reservas"
@@ -52,7 +28,7 @@ def le_reservas():
     except requests.exceptions.RequestException as e:
         return jsonify({'erro': 'Erro ao acessar a API externa', 'detalhes': str(e)}), 500
     
-@api_bp.route('/reservas/<int:id_reserva>', methods=['GET'])
+@api_bp.route("/reservas/<int:id_reserva>", methods=["GET"])
 def le_reservas_id(id_reserva):
     url = f"http://localhost:5001/reservas/{id_reserva}"  # Aqui é a correção
     try:
@@ -68,11 +44,6 @@ def le_reservas_id(id_reserva):
 #------------------------------------------------------------------------------------------------
 #                             A T I V I D A D E S
 #------------------------------------------------------------------------------------------------
-
-@api_bp.route("/teste/atividades", methods =['GET'])
-def teste():
-    return jsonify({"rotas": "funcionando"})
-
 @api_bp.route('/atividades', methods=['GET'])
 def listar_atividades():
     url = "http://127.0.0.1:5002/atividades"
@@ -84,7 +55,6 @@ def listar_atividades():
     
     except requests.exceptions.RequestException as e:
         return jsonify({'erro': 'Erro ao acessar a API externa', 'detalhes': str(e)}), 500
-
 
 @api_bp.route('/atividades/<int:id_atividade>', methods=['GET'])
 def listar_atividade_ID(id_atividade):
