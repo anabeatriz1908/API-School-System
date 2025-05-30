@@ -9,7 +9,7 @@ def cria_reserva():
     dados = request.get_json()
     try:
         resposta = requests.post(url, json=dados)
-        resposta.raise_for_status()  # Lança erro se status != 200
+        resposta.raise_for_status()
         dados = resposta.json()
         return jsonify(dados)
     
@@ -21,7 +21,7 @@ def le_reservas():
     url = "http://localhost:5001/reservas"
     try:
         resposta = requests.get(url)
-        resposta.raise_for_status()  # Lança erro se status != 200
+        resposta.raise_for_status()
         dados = resposta.json()
         return jsonify(dados)
     
@@ -30,7 +30,7 @@ def le_reservas():
     
 @api_bp.route("/reservas/<int:id_reserva>", methods=["GET"])
 def le_reservas_id(id_reserva):
-    url = f"http://localhost:5001/reservas/{id_reserva}"  # Aqui é a correção
+    url = f"http://localhost:5001/reservas/{id_reserva}"
     try:
         resposta = requests.get(url)
         resposta.raise_for_status()
@@ -40,16 +40,12 @@ def le_reservas_id(id_reserva):
         return jsonify({'erro': 'Erro ao acessar a API externa', 'detalhes': str(e)}), 500
 
 
-
-#------------------------------------------------------------------------------------------------
-#                             A T I V I D A D E S
-#------------------------------------------------------------------------------------------------
 @api_bp.route('/atividades', methods=['GET'])
 def listar_atividades():
     url = "http://127.0.0.1:5002/atividades"
     try:
         resposta = requests.get(url)
-        resposta.raise_for_status()  # Lança erro se status != 200
+        resposta.raise_for_status() 
         dados = resposta.json()
         return jsonify(dados)
     
@@ -58,7 +54,7 @@ def listar_atividades():
 
 @api_bp.route('/atividades/<int:id_atividade>', methods=['GET'])
 def listar_atividade_ID(id_atividade):
-    url = f"http://localhost:5002/atividades/{id_atividade}"  # Aqui é a correção
+    url = f"http://localhost:5002/atividades/{id_atividade}" 
     try:
         resposta = requests.get(url)
         resposta.raise_for_status()
@@ -74,7 +70,7 @@ def criar_atividade():
     dados = request.get_json()
     try:
         resposta = requests.post(url, json=dados)
-        resposta.raise_for_status()  # Lança erro se status != 200
+        resposta.raise_for_status() 
         dados = resposta.json()
         return jsonify(dados)
     
