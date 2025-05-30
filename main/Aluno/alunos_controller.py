@@ -6,6 +6,12 @@ from config import db
 
 alunos_blueprint = Blueprint('alunos', __name__)
 
+
+@alunos_blueprint.route("/conexao", methods=['GET'])
+def testa_conexao():
+    return jsonify({"message":"conexao com api"}), 200
+
+
 		
 @alunos_blueprint.route('/alunos', methods=['POST'])
 def cria_alunos():
