@@ -64,20 +64,20 @@ A aplicação estará disponível em:
 1. **Clone o repositório**
 
 ```bash
-git clone https://github.com/anabeatriz1908/Atividades
-cd Atividades
+git clone https://github.com/anabeatriz1908/API-School-System.git
+cd API-School-System
 ```
 
 2. Construa a imagem Docker
 
 ```bash
-docker build -t atividades .
+docker build -t api-school-system .
 ```
 
 3. Execute o container
 
 ```bash
-docker run -d -p 5036:5036 atividades
+docker run -d -p 5036:5036 api-school-system
 ```
 
 ---
