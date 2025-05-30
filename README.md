@@ -1,11 +1,11 @@
 
 # 📚 API-School-System
 
-Este repositório contém a **API-School-System**, desenvolvida com **Flask** e **SQLAlchemy**, como parte de uma arquitetura baseada em **microsserviços**.
+Este repositório contém a **API-School-System**, desenvolvida com **Flask** e **SQLAlchemy**, baseada na arquitetura MVC.
 
 ## 🧩 Arquitetura
 
-A API-School-System é responsável exclusivamente pelo gerenciamento de Alunos, Professores e Turmas.
+A API-School-System é responsável exclusivamente pelo gerenciamento das entidades Alunos, Professores e Turmas.
 
 ---
 
@@ -16,16 +16,19 @@ A API-School-System é responsável exclusivamente pelo gerenciamento de Alunos,
 - SQLAlchemy
 - PostgreSQL (como banco de dados Web)
 - Requests (para consumo da API externa)
-
+- Docker
+- Render
+- Flaskrestx
+  
 ---
 
-## ▶️ Como Executar a API
+## ▶️ Como Executar a API localmente
 
 ### 1. Clone o repositório
 
 ```bash
 git clone https://github.com/anabeatriz1908/API-School-System.git
-cd Reservas
+cd API-School-System
 ```
 
 ### 2. Crie um ambiente virtual (opcional, mas recomendado)
@@ -61,52 +64,75 @@ Alunos:
 
     - `GET /alunos` – Lista todas os alunos
 
-    - `POST /alunos` – Cria um novo aluno
-
     - `GET /alunos/<id>` – Detalha um aluno por id
 
-    - `DELETE /alunos/<id>` – Deleta aluno por id
+    - `POST /alunos` – Cria um novo aluno
 
     - `PUT /alunos/<id>` – Altera aluno por id
 
+    - `DELETE /alunos/<id>` – Deleta aluno por id
 
+    - `DELETE /alunos` – Deleta todos os alunos
 
 Professores:
 
     - `GET /professores` – Lista todas os professores
 
-    - `POST /professores` – Cria um novo professor
-
     - `GET /professores/<id>` – Detalha um professor por id
 
-    - `DELETE /professores/<id>` – Deleta professor
+    - `POST /professores` – Cria um novo professor
 
     - `PUT /professores/<id>` – Altera um professor por id
+
+    - `DELETE /professores/<id>` – Deleta professor pelo id
+
+    - `DELETE /professores/` – Deleta todos os professores
 
 
 Turmas:
 
     - `GET /turmas` – Lista todas as turmas
+    
+    - `GET /turmas/<id>` – Detalha uma turma por id
 
     - `POST /turmas` – Cria uma nova turma
 
-    - `GET /turmas/<id>` – Detalha uma turma por id
+    - `PUT /turmas/<id>` – Altera uma turma por id
 
     - `DELETE /turmas/<id>` – Deleta uma turma por id
 
-    - `PUT /turmas/<id>` – Altera uma turma por id
+    - `DELETE /turmas` – Deleta todas as turmas
+    
 
+### Exemplo de corpo JSON do Post:
 
-
-### Exemplo de corpo JSON para criação:
-
+Alunos:
 ```json
 {
-  "turma_id": 1,
-  "sala": "101",
-  "data": "2025-05-06",
-  "hora_inicio": "14:00",
-  "hora_fim": "16:00"
+  "nome": "string",
+  "turma_id": 0,
+  "data_nascimento": "string",
+  "nota_primeiro_semestre": 0,
+  "nota_segundo_semestre": 0
+}
+```
+
+Professores:
+```json
+{
+  "nome": "string",
+  "materia": "string",
+  "observacoes": "string",
+  "idade": 0
+}
+```
+
+Turmas:
+```json
+{
+  "descricao": "string",
+  "professor_id": 0,
+  "ativo": true
 }
 ```
 
@@ -128,7 +154,7 @@ API-School-System/
 | | ├── turmas_controller.py
 | | ├── turmas_model.py
 ├── services
-| ├── services_reservas.py
+| ├── services.py
 ├── swagger
 | ├── namespaces
 | | ├── alunos_namespaces.py
@@ -140,21 +166,48 @@ API-School-System/
 | ├── test_unidade.py
 ├── app.py
 ├── config.py
-├── dockerfie
+├── dockerfile
+├── .dockerignore
 ├── requirements.txt
 └── README.md
 ```
+---
+
+## 🐳 Como Executar a API com Docker
+
+1. **Clone o repositório**
+
+```bash
+git clone https://github.com/anabeatriz1908/API-School-System.git
+cd API-School-System
+```
+
+2. Construa a imagem Docker
+
+```bash
+docker build -t api-school-system .
+```
+
+3. Execute o container
+
+```bash
+docker run -d -p 5036:5036 api-school-system
+```
+
+4. A aplicação estará disponível em:
+📍 http://localhost:5036
+
 
 ---
 
 ## 🌐 A Api está disponível para consumo na web
 
 Disponível através do link:
-📍 `https://apischoolsystem.onrender.com/docs`
+📍 `https://apischoolsystem.onrender.com`
 
 
 Disponível imagem com docker através do link:
-📍 `https://devapi-latest-2w6v.onrender.com/docs`
+📍 `https://devapi-latest-2w6v.onrender.com`
 
 ---
 
@@ -172,5 +225,6 @@ Pablo Neves Vavrik - RA: 2400125
 
 Uatila dos Santos Silva - RA: 2400250
 
-– Projeto educativo de arquitetura com Flask e microsserviços.
+
+– Projeto educativo de arquitetura com Flask.
 
