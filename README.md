@@ -3,6 +3,7 @@
 
 Este repositório contém a **API-School-System**, desenvolvida com **Flask** e **SQLAlchemy**, baseada na arquitetura MVC.
 
+
 ## 🧩 Arquitetura
 
 A API-School-System é responsável exclusivamente pelo gerenciamento das entidades Alunos, Professores e Turmas.
@@ -58,6 +59,29 @@ A aplicação estará disponível em:
 
 ---
 
+## 🐳 Como Executar a API com Docker
+
+1. **Clone o repositório**
+
+```bash
+git clone https://github.com/anabeatriz1908/Atividades
+cd Atividades
+```
+
+2. Construa a imagem Docker
+
+```bash
+docker build -t atividades .
+```
+
+3. Execute o container
+
+```bash
+docker run -d -p 5036:5036 atividades
+```
+
+---
+
 ## 📡 Endpoints Principais
 
 Alunos:
@@ -102,9 +126,10 @@ Turmas:
     - `DELETE /turmas/<id>` – Deleta uma turma por id
 
     - `DELETE /turmas` – Deleta todas as turmas
-    
 
-### Exemplo de corpo JSON do Post:
+---
+
+### Exemplo de corpo JSON para criação:
 
 Alunos:
 ```json
@@ -171,34 +196,6 @@ API-School-System/
 ├── requirements.txt
 └── README.md
 ```
----
-
-## 🐳 Como Executar a API com Docker
-
-1. **Clone o repositório**
-
-```bash
-git clone https://github.com/anabeatriz1908/API-School-System.git
-cd API-School-System
-```
-
-2. Construa a imagem Docker
-
-```bash
-docker build -t api-school-system .
-```
-
-3. Execute o container
-
-```bash
-docker run -d -p 5036:5036 api-school-system
-```
-
-4. A aplicação estará disponível em:
-📍 `http://localhost:5036`
-
-
----
 
 ## 🌐 A Api está disponível para consumo na web
 
