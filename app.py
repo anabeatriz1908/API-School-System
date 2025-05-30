@@ -7,8 +7,7 @@ from main.Turma.turmas_controller import turmas_blueprint
 from main.Professor.professores_controller import professores_blueprint
 from main.Aluno.alunos_controller import alunos_blueprint
 
-#Importando as rotas de conexão com as API
-from services.services_reserva import api_bp
+from services.service import api_bp
 
 app.register_blueprint(api_bp)
 
