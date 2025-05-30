@@ -195,7 +195,7 @@ docker run -d -p 5036:5036 api-school-system
 ```
 
 4. A aplicação estará disponível em:
-📍 http://localhost:5036
+📍 `http://localhost:5036`
 
 
 ---
